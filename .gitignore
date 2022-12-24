@@ -2,3 +2,5 @@
 *.mov
 *.png
 *.jpg
+
+config.json

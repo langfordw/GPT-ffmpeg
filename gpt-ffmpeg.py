@@ -24,7 +24,7 @@ def generate_completion(prompt, input_file):
     Use the OpenAI Chat Completion API to generate a completion for the given prompt.
     """
     prompt = (
-        "Genearate an ffmpeg prompt in response to a request below. Do not respond "
+        "Generate an ffmpeg prompt in response to a request below. Do not respond "
         "with anything other than the ffmpeg command itself. Name the output file "
         "'output' with the relvant extension except in the case of a repeated output pattern.\n\n"
         f"Request:{prompt}\n\nffmpeg -i {input_file}"

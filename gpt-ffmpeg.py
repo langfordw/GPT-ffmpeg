@@ -1,11 +1,13 @@
 #!/opt/homebrew/bin/python3
 import argparse
-import openai
+from openai import OpenAI
 import subprocess
 import os
 import json
 import re
 from termcolor import colored
+
+client = None
 
 def load_config():
     """
@@ -19,43 +21,44 @@ def load_config():
 
 def generate_completion(prompt, input_file):
     """
-    Use the OpenAI Completion API to generate a completion for the given prompt.
+    Use the OpenAI Chat Completion API to generate a completion for the given prompt.
     """
-    prompt = (f"Genearate an ffmpeg prompt in response to a request below. Do not respond with anything other than the ffmpeg command itself. Name the output file 'output' with the relvant extension except in the case of a repeated output pattern.\n\nRequest:{prompt}\n\nffmpeg -i {input_file}"
-             )
+    prompt = (
+        "Genearate an ffmpeg prompt in response to a request below. Do not respond "
+        "with anything other than the ffmpeg command itself. Name the output file "
+        "'output' with the relvant extension except in the case of a repeated output pattern.\n\n"
+        f"Request:{prompt}\n\nffmpeg -i {input_file}"
+    )
 
-    completions = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=prompt,
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt}],
         max_tokens=500,
-        n=1,
-        stop=None,
         temperature=0.0,
     )
 
-    message = completions.choices[0].text
+    message = response.choices[0].message.content
     return message
 
-def fix_command(command,input_prompt):
+def fix_command(command, input_prompt):
     """
-    Use the OpenAI Completion API to fix an erroneous FFmpeg command.
+    Use the OpenAI Chat Completion API to fix an erroneous FFmpeg command.
     """
     # Set the prompt for the Completion API
-    prompt = (f"Fix the following FFmpeg command. The intended functionality is to {input_prompt}:\n\n{command}\n\nFFmpeg "
-             )
+    prompt = (
+        f"Fix the following FFmpeg command. The intended functionality is to {input_prompt}:\n\n{command}\n\nFFmpeg "
+    )
 
-    # Use the Completion API to generate a fixed version of the command
-    completions = openai.Completion.create(
-        engine="text-davinci-002",
-        prompt=prompt,
+    # Use the Chat Completion API to generate a fixed version of the command
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt}],
         max_tokens=500,
-        n=1,
-        stop=None,
         temperature=0.0,
     )
 
     # Return the fixed command
-    return completions.choices[0].text
+    return response.choices[0].message.content
 
 
 def validate_command(command):
@@ -113,6 +116,5 @@ def main():
         print(colored("Failed command: "+command,"red"))
 
 if __name__ == "__main__":
-    # Replace YOUR_API_KEY with your actual API key
-    openai.api_key = load_config()["api_key"]
+    client = OpenAI(api_key=load_config()["api_key"])
     main()

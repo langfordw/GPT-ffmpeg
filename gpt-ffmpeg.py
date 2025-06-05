@@ -19,7 +19,7 @@ def generate_completion(prompt, input_file):
     """
     Use the OpenAI Completion API to generate a completion for the given prompt.
     """
-    prompt = (f"Genearate an ffmpeg prompt in response to a request below. Do not respond with anything other than the ffmpeg command itself. Name the output file 'output' with the relvant extension except in the case of a repeated output pattern.\n\nRequest:{prompt}\n\nffmpeg -i {input_file}"
+    prompt = (f"Generate an ffmpeg prompt in response to a request below. Do not respond with anything other than the ffmpeg command itself. Name the output file 'output' with the relevant extension except in the case of a repeated output pattern.\n\nRequest:{prompt}\n\nffmpeg -i {input_file}"
              )
 
     completions = openai.Completion.create(

@@ -72,6 +72,7 @@ def test_fix_command_calls_chat_api():
     completions_mock.create.reset_mock()
     result = gpt_ffmpeg.fix_command("ffmpeg -i input.mp4", "resize")
     assert isinstance(result, str)
+    assert result.startswith("ffmpeg")
     completions_mock.create.assert_called_once()
     assert completions_mock.create.call_args[1]["model"] == "gpt-3.5-turbo"
 

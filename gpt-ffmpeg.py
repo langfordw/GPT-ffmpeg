@@ -57,8 +57,11 @@ def fix_command(command, input_prompt):
         temperature=0.0,
     )
 
-    # Return the fixed command
-    return response.choices[0].message.content
+    fixed = response.choices[0].message.content.strip()
+    if not fixed.lower().startswith("ffmpeg"):
+        fixed = "ffmpeg " + fixed
+
+    return fixed
 
 
 def validate_command(command):

@@ -11,7 +11,9 @@ def load_config():
     """
     Load the configuration from a JSON file.
     """
-    with open("/usr/local/bin/config.json") as f:
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    config_path = os.path.join(script_dir, "config.json")
+    with open(config_path) as f:
         config = json.load(f)
     return config
 
@@ -99,7 +101,7 @@ def main():
     command = 'ffmpeg '+input_files+' '+completion+'"'
 
     # Run command back through GPT to correct any errors
-    fixed_command = "ffmpeg" + fix_command(command,args.prompt)
+    fixed_command = fix_command(command, args.prompt).strip()
 
     if (validate_command(fixed_command)):
         # Run the FFmpeg command using subprocess
